@@ -17,12 +17,6 @@ declare global {
 async function bootstrap() {  
   //firebase initialize
   admin.initializeApp({
-    credential: admin.credential.cert({
-      private_key: serviceAccount.private_key,
-      client_email: serviceAccount.client_email,
-      project_id: serviceAccount.project_id
-    } as Partial<admin.ServiceAccount>),
-    databaseURL: `${serviceAccount.project_id}.europe-west1.firebasedatabase.app`
   });
 
   const app = await NestFactory.create(AppModule);

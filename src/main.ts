@@ -6,8 +6,15 @@ import { AppModule } from './app.module';
 import * as serviceAccount from "./firebaseAuth/firebaseServiceAccount.json";
 import { ValidationPipe } from '@nestjs/common';
 
+declare global {
+  namespace Express {
+    interface Request {
+      uid?: string
+    }
+  }
+}
 
-async function bootstrap() {
+async function bootstrap() {  
   //firebase initialize
   admin.initializeApp({
     credential: admin.credential.cert({
@@ -36,6 +43,6 @@ async function bootstrap() {
   //enable all cors
   app.enableCors();
 
-  await app.listen(3000);
+  await app.listen(3008);
 }
 bootstrap();

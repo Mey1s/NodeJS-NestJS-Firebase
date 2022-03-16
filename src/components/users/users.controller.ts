@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put, UseGuards, Request, forwardRef, Inject } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put, UseGuards, forwardRef, Inject, Req, Request } from '@nestjs/common';
 import { CreateUserDtoRequest, FindUserDtoResponse, UpdateUserDtoRequest } from './users.document';
 import { UsersService } from './users.service';
 import { LocalAuthGuard } from 'src/usersAuth/local-auth.guard';
@@ -22,12 +22,18 @@ export class UsersController {
     return await this.usersService.updateOne(uid, updateUser);
   }
 
-  //by id/email/phone number
-  @Get(':serach')
-  async getOne(@Param('serach') serach: string): Promise<FindUserDtoResponse> {
-    const user =  await this.usersService.findOne(serach);
+  @Get('details')
+  async getOne(@Req() req: Express.Request): Promise<FindUserDtoResponse> {
+    const user =  await this.usersService.findOne(req.uid);
     return new FindUserDtoResponse(user);
   }
+
+  //by id/email/phone number
+  // @Get(':serach')
+  // async getOne(@Param('serach') serach: string): Promise<FindUserDtoResponse> {
+  //   const user =  await this.usersService.findOne(serach);
+  //   return new FindUserDtoResponse(user);
+  // }
 
   @Get()
   async getAll(@Body('userFields') userFields: Partial<FindUserDtoResponse>[] = []): Promise<FindUserDtoResponse[]> {

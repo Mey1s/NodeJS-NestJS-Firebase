@@ -85,26 +85,35 @@ export class UsersService {
     return users;
   }
 
-  async findOne(serachBy: string): Promise<FindUserWithPasswordDtoResponse> {
-    const userRef = this.usersCollection.doc(serachBy);
+  async findOne(uid: string): Promise<FindUserWithPasswordDtoResponse> {
+    const userRef = this.usersCollection.doc(uid);
     const doc = await userRef.get();
-    if (!doc.exists) {
-      const doc = await this.usersCollection.where("email", "==", serachBy).get();
-      if (doc.empty) {
-        const doc = await this.usersCollection.where("phoneNumber", "==", serachBy).get();
-        if (doc.empty) {
-          throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
-        }
-        else {
-          return doc.docs[0].data();
-        }
-      }
-      else {
-        return doc.docs[0].data();
-      }
+    if(!doc.exists) {
+      throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
     }
     return doc.data();
   }
+
+  // async findOne(serachBy: string): Promise<FindUserWithPasswordDtoResponse> {
+  //   const userRef = this.usersCollection.doc(serachBy);
+  //   const doc = await userRef.get();
+  //   if (!doc.exists) {
+  //     const doc = await this.usersCollection.where("email", "==", serachBy).get();
+  //     if (doc.empty) {
+  //       const doc = await this.usersCollection.where("phoneNumber", "==", serachBy).get();
+  //       if (doc.empty) {
+  //         throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+  //       }
+  //       else {
+  //         return doc.docs[0].data();
+  //       }
+  //     }
+  //     else {
+  //       return doc.docs[0].data();
+  //     }
+  //   }
+  //   return doc.data();
+  // }
 }
 
 

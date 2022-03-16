@@ -1,9 +1,8 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { FirestoreModule } from './firestore/firestore.module';
-import * as serviceAccount from "./firebaseAuth/firebaseServiceAccount.json";
 import { UsersModule } from './components/users/users.module';
 import { RolesModule } from './components/roles/roles.module';
 import { GendersModule } from './components/genders/genders.module';
@@ -15,6 +14,7 @@ import { ChatsModule } from './components/chats/chats.module';
 import { MessagesModule } from './components/messages/messages.module';
 import { RejectionsModule } from './components/rejections/rejections.module';
 import { AuthModule } from './usersAuth/auth.module';
+import { UserMiddleware } from './middlewares/auth.middleware';
 
 @Module({
   imports: [
@@ -44,7 +44,13 @@ import { AuthModule } from './usersAuth/auth.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule { 
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(UserMiddleware)
+      .forRoutes({ path: 'users/details', method: RequestMethod.GET });
+  }
+}
 
 
 //Create middlewares

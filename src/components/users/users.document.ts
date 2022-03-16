@@ -1,8 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Timestamp } from "@google-cloud/firestore";
-import { ArrayMinSize, IsArray, IsBoolean, IsDate, IsEmail, IsInt, IsNotEmpty, IsOptional, IsPhoneNumber, IsString, Length, Max, Min } from 'class-validator';
+import { ArrayMinSize, IsArray, IsDate, IsEmail, IsInt, IsNotEmpty, IsOptional, IsPhoneNumber, IsString, Length, Max, Min } from 'class-validator';
 import { Type } from 'class-transformer';
-import { v4 as uuidv4 } from 'uuid';
 import * as bcrypt from 'bcrypt';
 
 const now = new Date();
@@ -24,12 +23,12 @@ export class UserMethods {
       salt,
     );
     return{
-      uid: uuidv4(),
+      uid: user.uid,
       roleId: '',
       name: user.name,
       authProvider: user.authProvider,
-      email: user.email,
-      phoneNumber: user.phoneNumber,
+      email: user.email? user.email : '',
+      phoneNumber: user.phoneNumber ? user.phoneNumber : '',
       password: encryptedPassword,
       genderId: '',
       showGendersIds: [],
@@ -58,31 +57,37 @@ export class UserMethods {
 export class CreateUserDtoRequest {
   @IsNotEmpty()
   @IsString()
-  @Length(5, 250)
+  @Length(1, 500)
+  @ApiProperty()
+  uid: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @Length(5, 50)
   @ApiProperty()
   name: string;
 
   @IsNotEmpty()
   @IsString()
-  @Length(10, 250)
+  @Length(1, 50)
   @ApiProperty()
   authProvider: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsEmail()
-  @Length(5, 250)
+  @Length(5, 100)
   @ApiProperty()
   email: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsPhoneNumber()
-  @Length(10, 250)
+  @Length(10, 20)
   @ApiProperty()
   phoneNumber: string;
 
   @IsNotEmpty()
   @IsString()
-  @Length(8, 500)
+  @Length(8, 250)
   @ApiProperty()
   password: string;
 }
